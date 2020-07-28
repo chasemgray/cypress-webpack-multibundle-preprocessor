@@ -186,25 +186,6 @@ const preprocessorFullBuild = (options, file) => {
   // Retrieve all spec files
   let testFiles = []
   {
-    // Determine "cypress" path
-    let cypressFolder = ''
-    const dirParts = filePath.split(path.sep)
-    for (let i = dirParts.length - 1; i >= 0; i--) {
-      const dirPart = dirParts[i]
-      if (dirPart === 'cypress') {
-        // Built directory name from parts
-        for (let j = 0; j <= i; j++) {
-          if (cypressFolder !== '') {
-            cypressFolder += path.sep
-          }
-          cypressFolder += dirParts[j]
-        }
-      }
-    }
-    if (cypressFolder === '') {
-      throw new Error(`Cannot determine "cypress/integration" folder from spec filepath: ${filePath}`)
-    }
-
     const integrationFolder = `${cypressFolder + path.sep}integration`
 
     const testFiles = glob.sync("**/*integration.+(j|t)s?(x)");
@@ -212,12 +193,13 @@ const preprocessorFullBuild = (options, file) => {
     if (testFiles.length === 0) {
       throw new Error(`Cannot find any spec files in: ${integrationFolder}`)
     }
-    const supportFile = `${cypressFolder + path.sep}support${path.sep}index.js`
-    if (fs.existsSync(supportFile)) {
-      testFiles.push(supportFile)
-    } else {
-      throw new Error(`Missing support file: ${supportFile}`)
-    }
+
+    // const supportFile = `${cypressFolder + path.sep}support${path.sep}index.js`
+    // if (fs.existsSync(supportFile)) {
+    //   testFiles.push(supportFile)
+    // } else {
+    //   throw new Error(`Missing support file: ${supportFile}`)
+    // }
   }
 
   // we're provided a default output path that lives alongside Cypress's
