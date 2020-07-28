@@ -3,7 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const webpack = require('webpack')
 const log = require('debug')('cypress:webpack')
-
+const glob = require('glob');
 const createDeferred = require('./deferred')
 
 const bundles = {}
@@ -207,20 +207,8 @@ const preprocessorFullBuild = (options, file) => {
 
     const integrationFolder = `${cypressFolder + path.sep}integration`
 
-    filewalker(integrationFolder, function (err, fileList) {
-      if (err) {
-        throw err
-      }
-      for (let filePath of fileList) {
-        const ext = path.extname(filePath)
-        if (ext === '.js' ||
-          ext === '.jsx' ||
-          ext === '.ts' ||
-          ext === '.tsx') {
-          testFiles.push(filePath)
-        }
-      }
-    })
+    const testFiles = glob.sync("**/*integration.+(j|t)s?(x)");
+    
     if (testFiles.length === 0) {
       throw new Error(`Cannot find any spec files in: ${integrationFolder}`)
     }
